@@ -1,0 +1,35 @@
+<% include ../partials/header %> 
+<!-- Page Content Holder -->
+<div id="content">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+
+                <div class="navbar-header">
+                    <button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
+                        <i class="glyphicon glyphicon-align-left"></i>
+                    </button>
+                    <a class="navbar-brand" href="/">WhatDFuss</a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="/AboutUs">About Us</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div>
+            <% feeds.forEach(function(feed){ %>
+                <div class="title"><a href="<%= feed.link %>"><%= feed.title %></a></div>
+                <div  class="sourceSite"> 
+                    <p align="left">Source : <%= feed.source %> </p>
+                    <span><%= feed.date %></span>
+                </div>
+                <div class="line"></div>
+            <% }); %>
+        </div>
+    </div>
+</div>
+                
+<% include ../partials/footer %> 
