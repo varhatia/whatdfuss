@@ -1,0 +1,58 @@
+<% include ../partials/header %> 
+<!-- Page Content Holder -->
+<div id="content">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+
+                <div class="navbar-header">
+                    <button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
+                        <i class="glyphicon glyphicon-align-left"></i>
+                    </button>
+                    <a class="navbar-brand" href="/">WhatDFuss</a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                            <li><a href="/AboutUs">About Us</a></li>
+                        <% if(!currentUser){ %>
+                            <li><a href="/login">Login</a></li>
+                            <li><a href="/register">Sign Up</a></li>
+                        <% } else {%>
+                            <li><a href="#">Signed In As <%= currentUser.username %></a></li>
+                            <li><a href="/logout">Logout</a></li>
+                        <% } %>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <form action="/sourceRoute" method="post" id="sourceForm">
+            <div><p>AI Sources</p></div>
+            <div>
+                <input type="checkbox" name="Future of AI" value="2" checked><div class="sourceName">&nbsp; Future of AI</div>
+                <input type="checkbox" name="aiSource3" value="3" checked><div class="sourceName">&nbsp; Becoming Human</div>
+                <input type="checkbox" name="aiSource4" value="4" checked><div class="sourceName">&nbsp; News 18</div>
+                <input type="checkbox" name="aiSource5" value="5" checked><div class="sourceName">&nbsp; HackerNews</div> 
+            </div>
+            <!-- <div><p>Open Source</p></div>
+            <div>
+                <input type="checkbox" name="osSource1" value="6" checked><div class="sourceName">&nbsp; AI Trends</div>
+                <input type="checkbox" name="osSource2" value="7" checked><div class="sourceName">&nbsp; Future of AI</div>
+                <input type="checkbox" name="osSource3" value="8" checked><div class="sourceName">&nbsp; Becoming Human</div>
+                <input type="checkbox" name="osSource4" value="9" checked><div class="sourceName">&nbsp; News 18</div>
+                <input type="checkbox" name="osSource5" value="10" checked><div class="sourceName">&nbsp; HackerNews</div>
+            </div>
+            <div><p>Cloud</p></div>
+            <div>
+                <input type="checkbox" name="clSource1" value="11" checked><div class="sourceName">&nbsp; AI Trends</div>
+                <input type="checkbox" name="clSource2" value="12" checked><div class="sourceName">&nbsp; Future of AI</div>
+                <input type="checkbox" name="clSource3" value="13" checked><div class="sourceName">&nbsp; Becoming Human</div>
+                <input type="checkbox" name="clSource4" value="14" checked><div class="sourceName">&nbsp; News 18</div>
+                <input type="checkbox" name="clSource5" value="15" checked><div class="sourceName">&nbsp; HackerNews</div>
+            </div> -->
+            <input type="submit" value="Apply!">
+        </form>
+    </div>
+</div>
+                
+<% include ../partials/footer %> 

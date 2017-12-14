@@ -7,4 +7,4 @@ var feedSchema = new mongoose.Schema({
    date: String
 });
 
-module.exports = mongoose.model("feed", feedSchema);
+module.exports = mongoose.model("Feed", feedSchema);

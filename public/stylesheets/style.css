@@ -187,7 +187,7 @@ a.article, a.article:hover {
     font-family: 'Arial', sans-serif;
     font-size: 1.3em;
     font-weight: 300;
-    line-height: 1em;
+    line-height: 2em;
 }
 
 .sourceSite {
@@ -208,4 +208,12 @@ a.article, a.article:hover {
 
 .row {
     padding: 20px;
+}
+
+.sourceName {
+    font-family: 'Arial', sans-serif;
+    display: inline-block;
+    max-width: 100%;
+    margin-bottom: 5px; 
+    padding: 5px 5px;
 }
