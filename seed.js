@@ -18,6 +18,7 @@ function parseBecomingAIImpl(){
           console.log("Error: " + error);
         }
         else{
+            console.log("Status code: " + response.statusCode);
             var $ = cheerio.load(body);
         
             $('div.js-postListHandle > div.u-paddingTop20').each(function( index ) {
@@ -41,7 +42,7 @@ function parseBecomingAIImpl(){
                 var nwdate = date.format(datemod, 'MMMM DD');
                 // console.log(nwdate);
                         
-                var newFeedRecord = {source: "Becoming Human", title: title, link: link, date: nwdate}
+                var newFeedRecord = {source: "Becoming Human", type: "ai", title: title, link: link, date: nwdate}
                 
                 Feed.create(newFeedRecord, function(err, newlyFetched){
                     if(err){
@@ -76,7 +77,7 @@ function parseAITrendsImpl(){
                 nwdate = dateTime[0];
                 // console.log(nwdate);
                 
-                var newFeedRecord = {source: "AI Trends", title: title, link: link, date: nwdate}
+                var newFeedRecord = {source: "AI Trends", type: "ai", title: title, link: link, date: nwdate}
                 
                 Feed.create(newFeedRecord, function(err, newlyFetched){
                     if(err){
@@ -113,7 +114,7 @@ function parseFutureOfLifeImpl(){
                 var nwdate = date.format(datemod, 'MMMM DD'); 
                 console.log(nwdate);
     
-                var newFeedRecord = {source: "Future of Life", title: title, link: link, date: nwdate}
+                var newFeedRecord = {source: "Future of Life", type: "ai", title: title, link: link, date: nwdate}
                 
                 Feed.create(newFeedRecord, function(err, newlyFetched){
                     if(err){
@@ -140,6 +141,12 @@ function parseNews18Impl(){
                 var link = $(this).find('h2 > a').attr('href');
                 var title = $(this).find('h2 > a').text().trim();
                 var time = $(this).find('span.post-date').text().trim();
+                var category = $(this).find('span.post-date > a ').text().trim();
+                if(category != "Tech")
+                {
+                    return;
+                }
+                
                 console.log("Link: " + link);
                 console.log("Title: " + title);
                 console.log("Time: " + time); //November 20, 2017, 12:01 pmexplore: Auto
@@ -148,7 +155,7 @@ function parseNews18Impl(){
                 nwdate = dateTime[0];
                 console.log(nwdate);
                
-                var newFeedRecord = {source: "News 18", title: title, link: link, date: nwdate}
+                var newFeedRecord = {source: "News 18", type: "ai", title: title, link: link, date: nwdate}
                 Feed.create(newFeedRecord, function(err, newlyFetched){
                 if(err){
                     console.log(err);
@@ -159,8 +166,98 @@ function parseNews18Impl(){
     });
 }
 
-function hackerNews(){
-    request("http://www.news18.com/newstopics/artificial-intelligence/news/", function(error, response, body) {
+//All ML
+function parseTechCrunchMLImpl(){
+    request("https://techcrunch.com/tag/machine-learning/", function(error, response, body) {
+        if(error) {
+            console.log("Error: " + error);
+        }
+        else
+        {
+            console.log("Status code: " + response.statusCode);
+           
+            var $ = cheerio.load(body);
+      
+            $('div.l-main > ul.river > li.river-block').each(function( index ) {
+                var link = $(this).find('div.block > div.block-content > h2 > a').attr('href');
+                var title = $(this).find('div.block > div.block-content > h2 > a').text().trim();
+                if(!link)
+                {
+                    link = $(this).find('div.block > div.block-content-brief > h2 > a').attr('href');
+                    title = $(this).find('div.block > div.block-content-brief > h2 > a').text().trim();
+                }
+                if(!link)
+                {
+                    link = $(this).find('div.block > div.block-featured-content > div.block-content > h2 > a').attr('href');
+                    title = $(this).find('div.block > div.block-featured-content > div.block-content > h2 > a').text().trim();
+                }
+
+                var title = $(this).find('div.block > div.block-content > h2 > a').text().trim();
+                console.log("Link: " + link);
+                console.log("Title: " + title);
+                // datetime logic
+
+                dateTime = link.split("/");
+                time = dateTime[3]+"-"+dateTime[4]+"-"+dateTime[5];
+                console.log("Time: " + time); //November 20, 2017, 12:01 pmexplore: Auto
+    
+                var datemod = date.parse(time, 'YYYY-MM-DD');
+                var nwdate = date.format(datemod, 'MMMM DD');
+                
+                console.log(nwdate);
+               
+                var newFeedRecord = {source: "Techcrunch", type: "ml", title: title, link: link, date: nwdate}
+                Feed.create(newFeedRecord, function(err, newlyFetched){
+                if(err){
+                    console.log(err);
+                    } 
+                });
+            });
+        }
+    });
+}
+
+function parseExtremeTechMLImpl(){
+    request("https://www.extremetech.com/tag/machine-learning", function(error, response, body) {
+        if(error) {
+            console.log("Error: " + error);
+        }
+        else
+        {
+            console.log("Status code: " + response.statusCode);
+           
+            var $ = cheerio.load(body);
+      
+            $('section.story-river > ul > li').each(function( index ) {
+                var link = $(this).find('div.deck > h4 > a').attr('href');
+                var title = $(this).find('div.deck > h4 > a').text().trim();
+                var time = $(this).find('div.deck > h4 > span').text().trim();
+                console.log("Link: " + link);
+                if(!link)
+                {
+                    return;
+                }
+                console.log("Title: " + title);
+                console.log("Time: " + time);
+                // datetime logic
+
+                dateTime = time.split(",");
+                nwdate = dateTime[0];
+                console.log(nwdate);
+
+                var newFeedRecord = {source: "ExtremeTech", type: "ml", title: title, link: link, date: nwdate}
+                Feed.create(newFeedRecord, function(err, newlyFetched){
+                if(err){
+                    console.log(err);
+                    } 
+                });
+            });
+        }
+    });
+}
+
+function parseNews18MLImpl(){
+    request("http://www.news18.com/newstopics/machine-learning/news/", function(error, response, body) {
         if(error) {
             console.log("Error: " + error);
         }
@@ -171,21 +268,357 @@ function hackerNews(){
             var $ = cheerio.load(body);
       
             $('div.search-listing > ul > li').each(function( index ) {
-                var $ = cheerio.load(body);
-                $('tr.athing:has(td.votelinks)').each(function( index ) {
-                    var title = $(this).find('td.title > a').text().trim();
-                    var link = $(this).find('td.title > a').attr('href');
-                    fs.appendFileSync('hackernews.txt', title + '\n' + link + '\n');
-                });
+                var link = $(this).find('h2 > a').attr('href');
+                var title = $(this).find('h2 > a').text().trim();
+                var time = $(this).find('span.post-date').text().trim();
+                var category = $(this).find('span.post-date > a ').text().trim();
+                if(category != "Tech")
+                {
+                    return;
+                }
+                
+                console.log("Link: " + link);
+                console.log("Title: " + title);
+                console.log("Time: " + time); //November 20, 2017, 12:01 pmexplore: Auto
+    
+                dateTime = time.split(",");
+                nwdate = dateTime[0];
+                console.log(nwdate);
+               
+                var newFeedRecord = {source: "News 18", type: "ml", title: title, link: link, date: nwdate}
                 Feed.create(newFeedRecord, function(err, newlyFetched){
-                    if(err){
-                        console.log(err);
+                if(err){
+                    console.log(err);
                     } 
                 });
             });
         }
     });
 }
+
+//All IOT
+function parseTechCrunchIOTImpl(){
+    request("https://techcrunch.com/tag/iot/", function(error, response, body) {
+        if(error) {
+            console.log("Error: " + error);
+        }
+        else
+        {
+            console.log("Status code: " + response.statusCode);
+           
+            var $ = cheerio.load(body);
+      
+            $('div.l-main > ul.river > li.river-block').each(function( index ) {
+                var link = $(this).find('div.block > div.block-content > h2 > a').attr('href');
+                if(!link)
+                {
+                    link = $(this).find('div.block > div.block-content-brief > h2 > a').attr('href');
+                }
+                if(!link)
+                {
+                    link = $(this).find('div.block > div.block-featured-content > div.block-content > h2 > a').attr('href');
+                }
+
+                var title = $(this).find('div.block > div.block-content > h2 > a').text().trim();
+                console.log("Link: " + link);
+                console.log("Title: " + title);
+                // datetime logic
+
+                dateTime = link.split("/");
+                time = dateTime[3]+"-"+dateTime[4]+"-"+dateTime[5];
+                console.log("Time: " + time); //November 20, 2017, 12:01 pmexplore: Auto
+    
+                var datemod = date.parse(time, 'YYYY-MM-DD');
+                var nwdate = date.format(datemod, 'MMMM DD');
+                console.log(nwdate);
+               
+                var newFeedRecord = {source: "Techcrunch", type: "iot", title: title, link: link, date: nwdate}
+                Feed.create(newFeedRecord, function(err, newlyFetched){
+                if(err){
+                    console.log(err);
+                    } 
+                });
+            });
+        }
+    });
+}
+
+function parseExtremeTechIOTImpl(){
+    request("https://www.extremetech.com/tag/internet-of-things", function(error, response, body) {
+        if(error) {
+            console.log("Error: " + error);
+        }
+        else
+        {
+            console.log("Status code: " + response.statusCode);
+           
+            var $ = cheerio.load(body);
+      
+            $('section.story-river > ul > li').each(function( index ) {
+                var link = $(this).find('div.deck > h4 > a').attr('href');
+                var title = $(this).find('div.deck > h4 > a').text().trim();
+                var time = $(this).find('div.deck > h4 > span').text().trim();
+                console.log("Link: " + link);
+                if(!link)
+                {
+                    return;
+                }
+                console.log("Title: " + title);
+                console.log("Time: " + time);
+                // datetime logic
+
+                dateTime = time.split(",");
+                nwdate = dateTime[0];
+                console.log(nwdate);
+
+                var newFeedRecord = {source: "ExtremeTech", type: "iot", title: title, link: link, date: nwdate}
+                Feed.create(newFeedRecord, function(err, newlyFetched){
+                if(err){
+                    console.log(err);
+                    } 
+                });
+            });
+        }
+    });
+}
+
+function parseNews18IOTImpl(){
+    request("http://www.news18.com/newstopics/iot/news/", function(error, response, body) {
+        if(error) {
+            console.log("Error: " + error);
+        }
+        else
+        {
+            console.log("Status code: " + response.statusCode);
+           
+            var $ = cheerio.load(body);
+      
+            $('div.search-listing > ul > li').each(function( index ) {
+                var link = $(this).find('h2 > a').attr('href');
+                var title = $(this).find('h2 > a').text().trim();
+                var time = $(this).find('span.post-date').text().trim();
+                var category = $(this).find('span.post-date > a ').text().trim();
+                if(category != "Tech")
+                {
+                    return;
+                }console.log("Link: " + link);
+                console.log("Title: " + title);
+                console.log("Time: " + time); //November 20, 2017, 12:01 pmexplore: Auto
+    
+                dateTime = time.split(",");
+                nwdate = dateTime[0];
+                console.log(nwdate);
+               
+                var newFeedRecord = {source: "News 18", type: "iot", title: title, link: link, date: nwdate}
+                Feed.create(newFeedRecord, function(err, newlyFetched){
+                if(err){
+                    console.log(err);
+                    } 
+                });
+            });
+        }
+    });
+}
+
+function parseNetworkWorldIOTImpl(){
+    request("https://www.networkworld.com/category/internet-of-things/", function(error, response, body) {
+        if(error) {
+            console.log("Error: " + error);
+        }
+        else
+        {
+            console.log("Status code: " + response.statusCode);
+           
+            var $ = cheerio.load(body);
+      
+            $('div.stories > div.article').each(function( index ) {
+                var link = $(this).find('div.promo-headline > h3 > a').attr('href');
+                var title = $(this).find('div.promo-headline > h3 > a').text().trim();
+                var time = $(this).find('div.byline').text().trim();
+                console.log("Link: " + "https://www.networkworld.com"+link);
+                console.log("Title: " + title);
+                console.log("Time: " + time); //November 20, 2017, 12:01 pmexplore: Auto
+    
+                //Date logic
+                dateTime = time.split("|");
+                var datemod = dateTime[1].trim();
+                dateActual = datemod.split(",");
+                nwdate = dateActual[0];
+                console.log(nwdate);
+               
+                var newFeedRecord = {source: "NetworkWorld", type: "iot", title: title, link: link, date: nwdate}
+                Feed.create(newFeedRecord, function(err, newlyFetched){
+                if(err){
+                    console.log(err);
+                    } 
+                });
+            });
+        }
+    });
+}
+
+//All Cloud
+function parseTechCrunchCloudImpl(){
+    request("https://techcrunch.com/cloud-2/", function(error, response, body) {
+        if(error) {
+            console.log("Error: " + error);
+        }
+        else
+        {
+            console.log("Status code: " + response.statusCode);
+           
+            var $ = cheerio.load(body);
+      
+            $('div.l-main > ul.river > li.river-block').each(function( index ) {
+                var link = $(this).find('div.block > div.block-content > h2 > a').attr('href');
+                if(!link)
+                {
+                    link = $(this).find('div.block > div.block-content-brief > h2 > a').attr('href');
+                }
+                if(!link)
+                {
+                    link = $(this).find('div.block > div.block-featured-content > div.block-content > h2 > a').attr('href');
+                }
+
+                var title = $(this).find('div.block > div.block-content > h2 > a').text().trim();
+                console.log("Link: " + link);
+                console.log("Title: " + title);
+                // datetime logic
+
+                dateTime = link.split("/");
+                time = dateTime[3]+"-"+dateTime[4]+"-"+dateTime[5];
+                console.log("Time: " + time); //November 20, 2017, 12:01 pmexplore: Auto
+    
+                var datemod = date.parse(time, 'YYYY-MM-DD');
+                var nwdate = date.format(datemod, 'MMMM DD');
+                console.log(nwdate);
+               
+                var newFeedRecord = {source: "Techcrunch", type: "cloud", title: title, link: link, date: nwdate}
+                Feed.create(newFeedRecord, function(err, newlyFetched){
+                if(err){
+                    console.log(err);
+                    } 
+                });
+            });
+        }
+    });
+}
+
+function parseNews18CloudImpl(){
+    request("http://www.news18.com/newstopics/cloud/news/", function(error, response, body) {
+        if(error) {
+            console.log("Error: " + error);
+        }
+        else
+        {
+            console.log("Status code: " + response.statusCode);
+           
+            var $ = cheerio.load(body);
+      
+            $('div.search-listing > ul > li').each(function( index ) {
+                var link = $(this).find('h2 > a').attr('href');
+                var title = $(this).find('h2 > a').text().trim();
+                var time = $(this).find('span.post-date').text().trim();
+                var category = $(this).find('span.post-date > a ').text().trim();
+                if(category != "Tech")
+                {
+                    return;
+                }
+                console.log("Link: " + link);
+                console.log("Title: " + title);
+                console.log("Time: " + time); //November 20, 2017, 12:01 pmexplore: Auto
+    
+                dateTime = time.split(",");
+                nwdate = dateTime[0];
+                console.log(nwdate);
+               
+                var newFeedRecord = {source: "News 18", type: "cloud", title: title, link: link, date: nwdate}
+                Feed.create(newFeedRecord, function(err, newlyFetched){
+                if(err){
+                    console.log(err);
+                    } 
+                });
+            });
+        }
+    });
+}
+
+function parseExtremeTechCloudImpl(){
+    request("https://www.extremetech.com/category/computing", function(error, response, body) {
+        if(error) {
+            console.log("Error: " + error);
+        }
+        else
+        {
+            console.log("Status code: " + response.statusCode);
+           
+            var $ = cheerio.load(body);
+      
+            $('section.story-river > ul > li').each(function( index ) {
+                var link = $(this).find('div.deck > h4 > a').attr('href');
+                var title = $(this).find('div.deck > h4 > a').text().trim();
+                var time = $(this).find('div.deck > h4 > span').text().trim();
+                console.log("Link: " + link);
+                if(!link)
+                {
+                    return;
+                }
+                console.log("Title: " + title);
+                console.log("Time: " + time);
+                // datetime logic
+
+                dateTime = time.split(",");
+                nwdate = dateTime[0];
+                console.log(nwdate);
+
+                var newFeedRecord = {source: "ExtremeTech", type: "cloud", title: title, link: link, date: nwdate}
+                Feed.create(newFeedRecord, function(err, newlyFetched){
+                if(err){
+                    console.log(err);
+                    } 
+                });
+            });
+        }
+    });
+}
+
+function parseNetworkWorldCloudImpl(){
+    request("https://www.networkworld.com/category/cloud-computing/", function(error, response, body) {
+        if(error) {
+            console.log("Error: " + error);
+        }
+        else
+        {
+            console.log("Status code: " + response.statusCode);
+           
+            var $ = cheerio.load(body);
+      
+            $('div.stories > div.article').each(function( index ) {
+                var link = $(this).find('div.promo-headline > h3 > a').attr('href');
+                var title = $(this).find('div.promo-headline > h3 > a').text().trim();
+                var time = $(this).find('div.byline').text().trim();
+                console.log("Link: " + "https://www.networkworld.com"+link);
+                console.log("Title: " + title);
+                console.log("Time: " + time); //November 20, 2017, 12:01 pmexplore: Auto
+    
+                //Date logic
+                dateTime = time.split("|");
+                var datemod = dateTime[1].trim();
+                dateActual = datemod.split(",");
+                nwdate = dateActual[0];
+                console.log(nwdate);
+               
+                var newFeedRecord = {source: "NetworkWorld", type: "cloud", title: title, link: link, date: nwdate}
+                Feed.create(newFeedRecord, function(err, newlyFetched){
+                if(err){
+                    console.log(err);
+                    } 
+                });
+            });
+        }
+    });
+}
+
 
 module.exports = {
     seedDB: function (){
@@ -208,6 +641,46 @@ module.exports = {
     parseNews18: function(){
         parseNews18Impl();
     },
+    
+    //ALL ML
+    parseTechCrunchML: function(){
+        parseTechCrunchMLImpl();
+    },
+    parseExtremeTechML: function(){
+        parseExtremeTechMLImpl();
+    },
+    parseNews18ML: function(){
+        parseNews18MLImpl();
+    },
+    
+    //All IOT
+    parseTechCrunchIOT: function(){
+        parseTechCrunchIOTImpl();
+    },
+    parseExtremeTechIOT: function(){
+        parseExtremeTechIOTImpl();
+    },
+    parseNews18IOT: function(){
+        parseNews18IOTImpl();
+    },
+    parseNetworkWorldIOT: function(){
+        parseNetworkWorldIOTImpl();
+    },
+    
+    //All Cloud
+    parseTechCrunchCloud: function(){
+        parseTechCrunchCloudImpl();
+    },
+    parseNews18Cloud: function(){
+        parseNews18CloudImpl();
+    },
+    parseExtremeTechCloud: function(){
+        parseExtremeTechCloudImpl();
+    },
+    parseNetworkWorldCloud: function(){
+        parseNetworkWorldCloudImpl();
+    },
+
     retriveRecurringFeed: function (){
         var interval = setInterval(function() {
             console.log("Retrieving after hour");
@@ -215,6 +688,16 @@ module.exports = {
             parseAITrendsImpl();
             parseFutureOfLifeImpl();
             parseNews18Impl();
+            parseExtremeTechMLImpl();
+            parseTechCrunchMLImpl();
+            parseTechCrunchIOTImpl();
+            parseExtremeTechIOTImpl();
+            parseNews18IOTImpl();
+            parseNetworkWorldIOTImpl();
+            parseTechCrunchCloudImpl();
+            parseExtremeTechCloudImpl();
+            parseNews18CloudImpl();
+            parseNetworkWorldCloudImpl();
         }, 360000);
     }
 }

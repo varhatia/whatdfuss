@@ -28,6 +28,17 @@ seed.parseBecomingAI();
 seed.parseAITrends();
 seed.parseFutureOfLife();
 seed.parseNews18();
+seed.parseTechCrunchML();
+seed.parseExtremeTechML();
+seed.parseNews18ML();
+seed.parseTechCrunchIOT();
+seed.parseExtremeTechIOT();
+seed.parseNews18IOT();
+seed.parseNetworkWorldIOT();
+seed.parseTechCrunchCloud();
+seed.parseNews18Cloud();
+seed.parseExtremeTechCloud();
+seed.parseNetworkWorldCloud();
 seed.retriveRecurringFeed();
 
 
@@ -53,6 +64,7 @@ app.use(function(req, res, next){
 app.use("/", indexRoute);
 app.use("/sourceRoute", sourceRoute);
 app.use("/feedRoute", feedRoute);
+
 
 app.listen(process.env.PORT || 3000 , function(){
     console.log("The WhatDFuss Server Has Started!");

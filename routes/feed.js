@@ -11,18 +11,24 @@ var middleware = require("../middleware");
 //root route
 router.get("/", middleware.isLoggedIn, function(req, res){
     User.findById(req.user._id, function(err, currentUser){
-        Feed.find({}, function(err, allFeeds){
+        Feed.find({}).exec(function(err, allFeeds){
             if(err){
                 console.log(err);
             } else {
-                Feed.count().exec(function(err, count) {
-                    if(err){
-                        console.log(err);
-                    } else {
-                        console.log("Count", count);
-                        res.render("feeds/index",{feeds: allFeeds});
-                    }
-                })
+                res.render("feeds/index",{feeds: allFeeds});
+            }
+        });
+    })
+});
+
+router.get("/:type", middleware.isLoggedIn, function(req, res){
+    User.findById(req.user._id, function(err, currentUser){
+        console.log("type : ", req.params.type);
+        Feed.find({type: req.params.type}, function(err, allFeeds){
+            if(err){
+                console.log(err);
+            } else {
+                res.render("feeds/index",{feeds: allFeeds});
             }
         });
     })
