@@ -11,6 +11,7 @@ var feedRoute = require("./routes/feed"),
     sourceRoute = require("./routes/source"),
     indexRoute = require("./routes/index")
 
+console.log("Database URL" ,process.env.DATABASEURL);
 if(!process.env.DATABASEURL)
 {   
     process.env.DATABASEURL = "mongodb://localhost/what_d_fuss_v1";
