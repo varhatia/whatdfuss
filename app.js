@@ -11,15 +11,17 @@ var feedRoute = require("./routes/feed"),
     sourceRoute = require("./routes/source"),
     indexRoute = require("./routes/index")
 
-console.log("Database URL" ,process.env.DATABASEURL);
+console.log("Database URL", process.env.DATABASEURL);
 if(!process.env.DATABASEURL)
 {   
     process.env.DATABASEURL = "mongodb://localhost/what_d_fuss_v1";
 }
+console.log("Database URL", process.env.DATABASEURL);
 
 
 //Note: set NODE_TLS_REJECT_UNAUTHORIZED=0 in windows to gt rid of "Error: self signed certificate in certificate chain"
 mongoose.connect(process.env.DATABASEURL);
+console.log("Database URL", process.env.DATABASEURL);
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.set("view engine", "ejs");
