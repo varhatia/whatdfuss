@@ -20,7 +20,7 @@ console.log("Database URL", process.env.DATABASEURL);
 
 
 //Note: set NODE_TLS_REJECT_UNAUTHORIZED=0 in windows to gt rid of "Error: self signed certificate in certificate chain"
-mongoose.connect(process.env.DATABASEURL);
+mongoose.connect("mongodb://admin:Vish@321@ds059207.mlab.com:59207/whatdfuss");
 console.log("Database URL", process.env.DATABASEURL);
 
 app.use(bodyParser.urlencoded({extended: false}));
